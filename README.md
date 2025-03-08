@@ -52,10 +52,11 @@ Which means it will only take you approx 270544026955332857686453576864535768645
 
 Here are some benchmarks:
 
-| CPU/SIP                  | Generations per second |
-| ------------------------ | ---------------------- |
-| Apple M1 PRO (8 threads) | 250.000                |
-|                          |                        |
+| CPU/SIP                   | Generations per second |
+| ------------------------- | ---------------------- |
+| Apple M1 PRO (8 threads)  | 230.000                |
+| Apple M4 PRO (12 threads) | 500.000                |
+|                           |                        |
 
 ## How does this work?
 
