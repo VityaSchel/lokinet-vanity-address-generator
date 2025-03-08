@@ -71,37 +71,52 @@ Here are some benchmarks:
 
 Based on lokinet's [ServiceInfo](https://github.com/oxen-io/lokinet/blob/178ac1757b1a6e835b9e39561376318c77e5ff08/llarp/service/info.cpp#L23) and [Identity](https://github.com/oxen-io/lokinet/blob/178ac1757b1a6e835b9e39561376318c77e5ff08/llarp/service/identity.cpp#L47). Proto version can be found [here](https://github.com/oxen-io/lokinet/blob/178ac1757b1a6e835b9e39561376318c77e5ff08/llarp/constants/proto.hpp#L7) (as of 8th March 2025, it's `0`).
 
-.private file is `bencode({ "s": signkey, "v": 0 })`
+Lokinet address is: `zbase32(signingKey) + ".loki"`, where signingKey (32 bytes) is `crypto_scalarmult_ed25519_base_noclamp(clamp_for_curve25519(sha512(random_seed)))`
 
-Lokinet address is: `zbase32(blake2b_256bit(bencode({ "s": signkey, "v": 0 }))) + ".loki"`
+.private file is `bencode({ "s": sValue, "v": 0 })` where sValue (64 bytes) is concatenated seed used to derive signingKey (32 bytes) and signingKey (32 bytes)
 
 Pseudo-language implementation:
 
 ```
-// 64 bytes
-signingKey = crypto_random_bytes(64)
+// 32 bytes
+seed = crypto_random_bytes(32)
 
 // as of 8th March 2025
 protoVersion = 0
 
-// 24 bytes
-nonce = crypto_random_bytes(24)
+// 64 bytes
+hash = sha512(seed)
 
-// arbitrary size string
+// Clamping curve25519: https://neilmadden.blog/2020/05/28/whats-the-curve25519-clamping-all-about/
+hash[0] &= 248
+hash[31] &= 63
+hash[31] |= 64
+
+// 32 bytes
+privateKey = hash[0:32]
+
+// 32 bytes
+signingKey = crypto_scalarmult_ed25519_base_noclamp(privateKey)
+
+// https://en.wikipedia.org/wiki/Base32#z-base-32
+// always 52 characters
+addressName = zbase32(signingKey)
+
+// always 57 characters
+address = addressName + ".loki"
+
+// == This part is for writing to .private file: ==
+
+// 64 bytes
+sValue = concat(seed, signingKey)
+
+// https://en.wikipedia.org/wiki/Bencode
 serviceInfo = bencode({
-  "s": signingKey,
+  "s": sValue, // Do not convert! just use raw bytes, bencode can handle them
   "v": protoVersion
 })
 
-// Now you can write serviceInfo to .private file of snapp for lokinet daemon
-
-// 32 bytes
-serviceInfoHash = blake2b_256bit(serviceInfo)
-
-// 32 bytes
-encodedServiceAddress = zbase32(serviceInfoHash)
-
-finalAddress = encodedServiceAddress + ".loki"
+// Write serviceInfo as utf-8 string to a .private file
 ```
 
 [ZBase32 encoding c++  headers by oxen](https://github.com/oxen-io/oxen-encoding/blob/dev/oxenc/base32z.h)
