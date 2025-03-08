@@ -1,10 +1,20 @@
-# **lokigen** — Lokinet vanity address generator
+# Lokinet vanity address generator
+
+![lokigen](https://github.com/user-attachments/assets/767150ef-08e2-4e6a-b055-94b12286dc36)
 
 [Download](https://github.com/VityaSchel/lokinet-vanity-address-generator/releases)
 
 Usage: `./lokigen [your prefix]` — the program will write .private files to ./output directory.
 
 Help: `./lokigen --help`
+
+## Features
+
+- Straightforward to use: just download a binary for your OS and run it
+- Fast and secure: only two dependencies for actual generation are used: bencode and libsodium-wrappers-sumo both of which are safe; you can review the whole code in just [two](./src/index.ts) [files](./src/worker.ts)
+- You can adjust number of threads
+
+Written in JavaScript with Bun.sh by [hloth](https://hloth.dev)
 
 ## Generation time estimation
 
@@ -42,10 +52,10 @@ Which means it will only take you approx 270544026955332857686453576864535768645
 
 Here are some benchmarks:
 
-| CPU/SIP            | Generations per second |
-| ------------------ | ---------------------- |
-| M1 PRO (8 threads) | 250.000                |
-|                    |                        |
+| CPU/SIP                  | Generations per second |
+| ------------------------ | ---------------------- |
+| Apple M1 PRO (8 threads) | 250.000                |
+|                          |                        |
 
 ## How does this work?
 

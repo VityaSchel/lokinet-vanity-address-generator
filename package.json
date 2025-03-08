@@ -27,11 +27,9 @@
   },
   "dependencies": {
     "bencode": "^4.0.0",
-    "blakejs": "^1.2.1",
     "chalk": "^5.4.1",
     "libsodium-wrappers-sumo": "^0.7.15",
     "log-update": "^6.1.0",
-    "yargs": "^17.7.2",
-    "z32": "^1.1.0"
+    "yargs": "^17.7.2"
   }
 }
