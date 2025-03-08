@@ -8,6 +8,15 @@ Usage: `./lokigen [your prefix]` — the program will write .private files to ./
 
 Help: `./lokigen --help`
 
+After generation, put the resulting .private file to the lokinet directory (on Ubuntu/Debian it's /var/lib/lokinet), assign _lokinet:_loki owner and set 644 file mode:
+
+```
+chmod 644 /var/lib/lokinet/yourdomain.loki.private
+chown _lokinet:_loki /var/lib/lokinet/yourdomain.loki.private
+```
+
+Edit lokinet.ini by pointing keyfile to the location of .private file and run `sudo systemctl restart lokinet`
+
 ## Features
 
 - Straightforward to use: just download a binary for your OS and run it
